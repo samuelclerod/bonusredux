@@ -1,12 +1,39 @@
-import {useSelector} from 'react-redux'
+import { useEffect, useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
+
+import { api } from "../services/api";
+import { addProductToCart } from "../store/modules/cart/actions";
+import { IProduct } from "../store/modules/cart/types";
 
 export default function Catalog() {
+    const dispatch = useDispatch();
+    const [catalog, setCatalog] = useState<IProduct[]>([]);
 
-    const catalog = useSelector(state => state);
+    useEffect(() => {
+        api.get('products').then(response => {
+            setCatalog(response.data);
+        })
+    }, [dispatch]);
 
-    console.log(catalog)
+    const handleAddProductToCart = useCallback((product: IProduct) => {
+        dispatch(addProductToCart(product));
+    }, [dispatch])
 
     return (
-        <h1>Catalog</h1>
+        <main>
+            <h1>Catalog</h1>
+            {catalog.map(product => (
+                <article key={product.id}>
+                    <strong>{product.title}</strong> {" - "}
+                    <span>{product.price}</span>{"   "}
+
+                    <button
+                        type="button"
+                        onClick={() => handleAddProductToCart(product)}
+                    >Comprar</button>
+                </article>
+            ))}
+
+        </main>
     )
 }

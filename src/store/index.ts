@@ -1,5 +1,12 @@
-import {createStore} from 'redux';
+import { createStore } from 'redux';
+import cart from './modules/cart/reducer';
+import { ICartState } from './modules/cart/types';
+import rootReducer from './modules/rootReducer';
 
-const store = createStore(() => []);
+export interface IState {
+  cart: ICartState;
+}
 
-export default store; 
+const store = createStore(rootReducer);
+
+export default store;
